@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -14,5 +13,87 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id              String       @id       @default(uuid())
+  username        String?
+  profilePicture  String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt 
+}
 
+model Model {
+  id                String       @id       @default(uuid())
+  name              String
+  type              ModelTypeEnum  
+  age               Int
+  ethnicity         EthnicityEnum
+  eyeColor          EyeColorEnum
+  bald              Boolean
+  trainingImages    TrainingImages[]
+  outputImages      OutputImages[]
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+}
 
+model TrainingImages {
+  id          String      @id       @default(uuid())
+  imageUrl    String
+  modelId     String
+  model       Model       @relation(fields: [modelId], references: [id])
+}
+
+model OutputImages {
+  id          String    @id       @default(uuid())
+  imageUrl    String
+  userId      String
+  modelId     String
+  model       Model    @relation(fields: [modelId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Packs {
+  id          String    @id       @default(uuid())
+  name        String
+  prompts     PackPrompts[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PackPrompts {
+  id          String    @id     @default(uuid())
+  prompt      String
+  packId      String
+  pack        Packs   @relation(fields: [packId], references: [id])
+}
+
+enum ModelTrainingStatus {
+  Pending
+  Generated
+  Failed
+}
+
+enum EthnicityEnum {
+  White       
+  Black
+  Asian_American      @map("asian_american")
+  East_Asian          @map("east_asian")
+  South_East_Asian    @map("south_east_asian")
+  South_Asian         @map("south_asian")
+  Middle_Eastern      @map("middle_eastern")
+  Pacific 
+  Hispanic
+}
+
+enum EyeColorEnum {
+  Brown
+  Blue
+  Hazel
+  Gray
+}
+
+enum ModelTypeEnum {
+  Man
+  Woman
+  Others
+}

@@ -3,6 +3,9 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "exports": {
+    ".": "./index.ts"
+  },
   "devDependencies": {
     "@types/bun": "latest",
     "prisma": "^6.7.0"
